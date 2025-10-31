@@ -1,0 +1,1299 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IreCan Smart Addon - 세계최초 리니지 클래식 애드온</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: url('배경.png') center center / cover no-repeat fixed;
+            color: #e4e4e7;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Banner Section */
+        .banner {
+            max-width: 900px;
+            margin: 30px auto;
+            height: 250px;
+            background: linear-gradient(135deg, #0a0e27 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.3);
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -120px;
+            left: -80px;
+        }
+
+        .banner::after {
+            content: '';
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -120px;
+            right: -80px;
+        }
+
+        .banner-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+
+        .banner h1 {
+            font-size: 50px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .banner .subtitle {
+            font-size: 24px;
+            color: #a1a1aa;
+            margin: 0;
+            font-weight: 400;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        h2 {
+            font-size: 2em;
+            font-weight: 800;
+            color: #fafafa;
+            margin-bottom: 12px;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            font-size: 1.05em;
+            color: #a1a1aa;
+            margin-bottom: 30px;
+        }
+
+        .problem-card {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #ef4444;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+
+        .problem-card h3 {
+            color: #fca5a5;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .problem-list {
+            list-style: none;
+        }
+
+        .problem-list li {
+            padding: 10px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #e4e4e7;
+            font-size: 0.95em;
+        }
+
+        .problem-list li:before {
+            content: "✕";
+            position: absolute;
+            left: 0;
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .solution {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(6, 182, 212, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .solution p {
+            font-size: 1.25em;
+            color: #06b6d4;
+            font-weight: 700;
+        }
+
+        /* Features Section */
+        .features-section {
+            margin: 50px 0;
+            padding: 35px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .feature-title {
+            font-size: 2em;
+            font-weight: 800;
+            color: #fafafa;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .feature-subtitle {
+            font-size: 1.05em;
+            color: #a1a1aa;
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        /* Hotkey Mapping */
+        .keyboard-visual {
+            margin: 30px 0;
+            padding: 35px 20px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .keyboard-title {
+            font-size: 1.15em;
+            color: #c4b5fd;
+            text-align: center;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .keyboard-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .key-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap; /* 줄바꿈 방지 */
+        }
+
+        .key {
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border: 2px solid #8b5cf6;
+            padding: 12px 0;
+            border-radius: 6px;
+            font-weight: 700;
+            color: #c4b5fd;
+            width: 52px;
+            min-width: 40px; /* 최소 너비 설정 */
+            font-size: 0.95em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            flex-shrink: 1; /* 모바일에서 축소 허용 */
+        }
+
+        .key-spacer {
+            width: 30px;
+            height: 1px;
+        }
+
+        .arrow-down {
+            color: #06b6d4;
+            font-size: 5em;
+            font-weight: 900;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .mapped-keys {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* 왼쪽 정렬로 변경 */
+            gap: 8px;
+            margin-top: 10px;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content; /* 내용 크기에 맞춤 */
+        }
+
+        .hotkey-features {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(6, 182, 212, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #06b6d4;
+        }
+
+        .hotkey-features ul {
+            list-style: none;
+            margin: 10px 0;
+        }
+
+        .hotkey-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #e4e4e7;
+            font-size: 0.95em;
+        }
+
+        .hotkey-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #06b6d4;
+            font-weight: bold;
+        }
+
+        /* Button UI Section */
+        .button-ui-section {
+            margin-top: 40px;
+        }
+
+        .game-screen-wrapper {
+            margin: 25px 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .game-screen-wrapper img {
+            width: 100%;
+            display: block;
+        }
+
+        .ui-features {
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #8b5cf6;
+        }
+
+        .ui-features ul {
+            list-style: none;
+        }
+
+        .ui-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #e4e4e7;
+            font-size: 0.95em;
+        }
+
+        .ui-features li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #8b5cf6;
+            font-weight: bold;
+        }
+
+        /* Sequence Section */
+        .sequence-features {
+            margin-top: 25px;
+        }
+
+        .feature-box {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(6, 182, 212, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #06b6d4;
+        }
+
+        .feature-box h4 {
+            color: #06b6d4;
+            font-size: 1.15em;
+            margin-bottom: 10px;
+        }
+
+        .feature-box p, .feature-box ul {
+            color: #e4e4e7;
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+
+        .feature-box ul {
+            list-style: none;
+            margin-top: 8px;
+        }
+
+        .feature-box li {
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .feature-box li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #06b6d4;
+        }
+
+        /* Conclusion Box */
+        .conclusion-box {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+            border-radius: 12px;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+            text-align: center;
+        }
+
+        .conclusion-box h3 {
+            font-size: 1.5em;
+            color: #c4b5fd;
+            margin-bottom: 10px;
+        }
+
+        .conclusion-box p {
+            font-size: 1.05em;
+            color: #e4e4e7;
+        }
+
+        /* Safety Section */
+        .safety-section {
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(16, 185, 129, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .safety-section h2 {
+            color: #10b981;
+            margin-bottom: 20px;
+        }
+
+        .safety-list {
+            list-style: none;
+        }
+
+        .safety-list li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #e4e4e7;
+            font-size: 0.95em;
+        }
+
+        .safety-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Video Section */
+        .video-section {
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .video-wrapper {
+            margin: 20px 0;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        .pricing-box {
+            margin: 20px 0;
+            padding: 25px;
+            background: rgba(245, 158, 11, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid #f59e0b;
+        }
+
+        .pricing-box h3 {
+            color: #fbbf24;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .pricing-box ul {
+            list-style: none;
+        }
+
+        .pricing-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #e4e4e7;
+            font-size: 0.95em;
+        }
+
+        .pricing-box li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #f59e0b;
+            font-weight: bold;
+        }
+
+        .notice-text {
+            text-align: center;
+            color: #a1a1aa;
+            margin-top: 25px;
+            font-size: 0.9em;
+            line-height: 1.8;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            text-align: center;
+            margin: 40px 0;
+            padding: 40px 25px;
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .contact-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .contact-section h2 {
+            margin-bottom: 8px;
+        }
+
+        .contact-section p {
+            color: #a1a1aa;
+            font-size: 1em;
+            margin: 12px 0;
+        }
+
+        .telegram-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #0088cc, #0077b6);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 1.15em;
+            font-weight: 700;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3);
+        }
+
+        .telegram-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 136, 204, 0.5);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 50px;
+        }
+
+        footer p {
+            color: #52525b;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        footer .brand {
+            color: #8b5cf6;
+            font-weight: 700;
+            font-size: 1em;
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(139, 92, 246, 0.3), transparent);
+            margin: 40px 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            .section-subtitle,
+            .feature-subtitle {
+                font-size: 0.95em;
+            }
+
+            .problem-section,
+            .features-section,
+            .safety-section,
+            .video-section,
+            .pricing-section,
+            .contact-section {
+                padding: 25px 15px;
+            }
+
+            .key {
+                width: 36px;
+                min-width: 32px;
+                padding: 8px 0;
+                font-size: 0.75em;
+            }
+
+            .key-spacer {
+                width: 10px;
+            }
+
+            .key-row {
+                gap: 4px; /* 모바일에서 간격 축소 */
+            }
+
+            .arrow-down {
+                font-size: 2.5em;
+            }
+
+            .problem-list li,
+            .hotkey-features li,
+            .ui-features li,
+            .feature-box p,
+            .feature-box li,
+            .safety-list li,
+            .pricing-box li {
+                font-size: 0.88em;
+            }
+
+            .keyboard-title {
+                font-size: 1em;
+            }
+        }
+    </style>
+
+<!-- Updated Hotkey Mapping Styles -->
+<style>
+/* Hotkey Mapping Styles */
+.keyboard-visual {
+    margin: 30px 0;
+    padding: 35px 15px;
+    background: rgba(139, 92, 246, 0.05);
+    border-radius: 12px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.keyboard-title {
+    font-size: 1.15em;
+    color: #c4b5fd;
+    text-align: center;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.keyboard-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.key-row {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: nowrap; /* 줄바꿈 방지 */
+    max-width: 100%;
+}
+
+.key {
+    border-radius: 6px;
+    font-weight: 700;
+    padding: 10px 0;
+    width: 48px;
+    min-width: 36px;
+    font-size: 0.85em;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    flex-shrink: 1; /* 작은 화면에서 축소 허용 */
+    transition: all 0.3s ease;
+}
+
+/* F1~F3, 1~3 그룹 - 어두운 보라 */
+.key-group-1 {
+    background: linear-gradient(145deg, #3b1f5c, #4a2568);
+    border: 2px solid #6b46a0;
+    color: #b8a4d4;
+}
+
+/* F2↔2 매칭 - 밝은 청록색 */
+.key-group-1.highlight {
+    background: linear-gradient(145deg, #22d3ee, #06b6d4);
+    border: 3px solid #67e8f9;
+    color: #ffffff;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.4);
+    transform: scale(1.05);
+}
+
+/* F5~F8, Q~R 그룹 - 중간 보라 */
+.key-group-2 {
+    background: linear-gradient(145deg, #5b21b6, #6d28d9);
+    border: 2px solid #8b5cf6;
+    color: #c4b5fd;
+}
+
+/* F5↔Q 매칭 - 중간 청록색 (약간 초록기) */
+.key-group-2.highlight {
+    background: linear-gradient(145deg, #14b8a6, #0d9488);
+    border: 3px solid #2dd4bf;
+    color: #ffffff;
+    box-shadow: 0 0 25px rgba(20, 184, 166, 0.8), 0 0 40px rgba(20, 184, 166, 0.4);
+    transform: scale(1.05);
+}
+
+/* F9~F12, A~F 그룹 - 밝은 보라 */
+.key-group-3 {
+    background: linear-gradient(145deg, #7c3aed, #8b5cf6);
+    border: 2px solid #a78bfa;
+    color: #ddd6fe;
+}
+
+/* F12↔F 매칭 - 진한 청록색 (약간 파란기) */
+.key-group-3.highlight {
+    background: linear-gradient(145deg, #0891b2, #0e7490);
+    border: 3px solid #06b6d4;
+    color: #ffffff;
+    box-shadow: 0 0 25px rgba(8, 145, 178, 0.8), 0 0 40px rgba(8, 145, 178, 0.4);
+    transform: scale(1.05);
+}
+
+.key-spacer {
+    width: 20px;
+    height: 1px;
+    flex-shrink: 1;
+}
+
+.arrow-down {
+    color: #06b6d4;
+    font-size: 4em;
+    font-weight: 900;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.mapped-keys {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+}
+
+.hotkey-features {
+    margin-top: 30px;
+    padding: 20px;
+    background: rgba(6, 182, 212, 0.05);
+    border-radius: 10px;
+    border-left: 3px solid #06b6d4;
+}
+
+.hotkey-features ul {
+    list-style: none;
+    margin: 10px 0;
+}
+
+.hotkey-features li {
+    margin: 12px 0;
+    color: #e4e4e7;
+    line-height: 1.6;
+}
+
+/* 모바일 최적화 */
+@media (max-width: 640px) {
+    .key {
+        width: 36px;
+        min-width: 28px;
+        font-size: 0.7em;
+        padding: 8px 0;
+    }
+
+    .key-row {
+        gap: 3px;
+    }
+
+    .key-spacer {
+        width: 8px;
+    }
+
+    .arrow-down {
+        font-size: 3em;
+    }
+
+    .keyboard-visual {
+        padding: 20px 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .key {
+        width: 32px;
+        min-width: 24px;
+        font-size: 0.65em;
+        padding: 6px 0;
+    }
+
+    .key-row {
+        gap: 2px;
+    }
+
+    .key-spacer {
+        width: 6px;
+    }
+}
+
+@media (max-width: 360px) {
+    .key {
+        width: 28px;
+        min-width: 22px;
+        font-size: 0.6em;
+        padding: 6px 0;
+    }
+
+    .key-row {
+        gap: 2px;
+    }
+
+    .key-spacer {
+        width: 4px;
+    }
+}
+
+/* Notice Banner */
+.notice-banner {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    color: #ffffff;
+    padding: 12px 20px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    display: none; /* 공지사항 있을 때만 표시 */
+}
+
+.notice-banner.show {
+    display: block;
+}
+
+.notice-content {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.notice-icon {
+    font-size: 1.2em;
+}
+
+.notice-text {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.notice-close {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    transition: background 0.3s;
+}
+
+.notice-close:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 768px) {
+    .notice-banner {
+        padding: 10px 15px;
+    }
+    .notice-text {
+        font-size: 0.9em;
+    }
+    .notice-close {
+        right: 10px;
+    }
+}
+
+/* Scroll to Top Button */
+.scroll-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.scroll-to-top.show {
+    display: flex;
+}
+
+.scroll-to-top:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+}
+
+@media (max-width: 768px) {
+    .scroll-to-top {
+        bottom: 20px;
+        right: 20px;
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+}
+</style>
+</head>
+<body>
+    <!-- Notice Banner -->
+    <div class="notice-banner" id="noticeBanner">
+        <div class="notice-content">
+            <span class="notice-icon">🔔</span>
+            <span class="notice-text" id="noticeText">로딩중...</span>
+        </div>
+        <button class="notice-close" onclick="closeNotice()">×</button>
+    </div>
+
+    <script>
+    // notice.txt 파일에서 공지사항 내용 읽기
+    fetch('notice.txt')
+        .then(response => {
+            if (!response.ok) throw new Error('No notice');
+            return response.text();
+        })
+        .then(text => {
+            const trimmedText = text.trim();
+            if (trimmedText) {
+                document.getElementById('noticeText').textContent = trimmedText;
+                document.getElementById('noticeBanner').classList.add('show');
+            }
+        })
+        .catch(error => {
+            // 로컬 환경이거나 notice.txt 없으면 기본 공지 표시
+            const defaultNotice = '🎉 신규 사용자 3일 무료 체험 이벤트 진행중! 새벽에는 승인이 늦어질 수 있습니다. 카톡 오픈채팅 "이레캔 스마트 애드온" 에서 사용자 경험과 사용노하우를 공유해 보세요!';
+            document.getElementById('noticeText').textContent = defaultNotice;
+            document.getElementById('noticeBanner').classList.add('show');
+        });
+
+    function closeNotice() {
+        document.getElementById('noticeBanner').style.display = 'none';
+    }
+    </script>
+
+    <!-- Banner Section -->
+    <div class="banner">
+        <div class="banner-content">
+            <h1>IreCan Smart Addon</h1>
+            <p class="subtitle">이레캔 스마트 애드온</p>
+        </div>
+    </div>
+
+    <!-- Manual Link -->
+    <div style="text-align: center; margin: -10px auto 30px auto; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+        <a href="manual_v2.html" class="telegram-link" style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3); display: inline-block;">
+            📖 매뉴얼
+        </a>
+        <a href="IreCan Addon.zip" download class="telegram-link" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); display: inline-block;">
+            💾 다운로드
+        </a>
+        <a href="https://t.me/smart_addon" class="telegram-link" target="_blank" style="background: linear-gradient(135deg, #0088cc, #0077b6); box-shadow: 0 8px 25px rgba(0, 136, 204, 0.3); display: inline-block;">
+            💬 문의하기
+        </a>
+    </div>
+
+    <!-- Notice Section -->
+    <div style="text-align: center; margin: 20px auto; padding: 15px; background: rgba(139, 92, 246, 0.08); border-radius: 12px; max-width: 600px;">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px;">
+            <img src="애드온캡처/irecan logo.png" alt="IreCan Logo" style="width: 32px; height: 32px;">
+            <p style="margin: 0; font-size: 1.1em; color: #c4b5fd; font-weight: 600;">
+                처음 등록요청 하시면 무료이용 라이센스 발급해 드립니다
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Intro Section -->
+        <div class="problem-section" style="background: rgba(139, 92, 246, 0.05); border: 1px solid rgba(139, 92, 246, 0.2);">
+            <h2 style="text-align: center; color: #c4b5fd;">💜 이레캔 애드온 이야기</h2>
+            <p style="text-align: center; font-size: 1.1em; line-height: 1.8; color: #d4d4d8; margin: 20px 0; padding: 0 20px;">
+                이레캔 애드온은 <strong style="color: #8b5cf6;">이레이즈 매직</strong> + <strong style="color: #8b5cf6;">캔슬레이션</strong> 마법을 빠르게 연달아 사용해서 상대방을 무력화 시키던 그시절 컨트롤과 향수를 떠올리며, 이제는 아재가 되어버린 유저분들을 위하여 제작하였습니다.<br>
+                <strong style="color: #a78bfa;">이레캔 애드온과 함께 훨씬 더 편안하고 즐겁게 게임하세요!</strong>
+            </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Problem Section -->
+        <div class="problem-section">
+            <h2>😓 20년 전 인터페이스, 불편하셨죠?</h2>
+            <p class="section-subtitle">세계최초 리니지 클래식 애드온 - 익숙하지만 불편했던 경험들</p>
+
+            <div class="problem-card">
+                <h3>이런 불편함, 공감하시나요?</h3>
+                <ul class="problem-list">
+                    <li>휠스크롤 굴리고 휠버튼 클릭해야 스킬 시전, 원하는 단축키 위치로 빠르게 전환 어려움</li>
+                    <li>F1 F2 F3 단축창 스왑하며 F12는 손도 안가고</li>
+                    <li>사용할 스킬·아이템 많으면 긴급한 순간 손꼬임</li>
+                    <li>F1~F12까지 거리 멀어서 사용하기 어려움</li>
+                    <li>반복되는 마우스 클릭, 단축키 입력 피로도 증가</li>
+                </ul>
+            </div>
+
+            <div class="solution">
+                <p>💡 이제 롤/와우처럼 QWER로 편하게 플레이하세요! 🎯</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Feature 1: Hotkey Mapping -->
+        <div class="features-section">
+            <h2 class="feature-title">⚡ 핵심 기능</h2>
+
+            <div style="margin-top: 40px;">
+    <h3 style="color: #c4b5fd; font-size: 1.6em; text-align: center; margin-bottom: 15px;">
+        1️⃣ 핫키 매핑 시스템
+    </h3>
+    <p class="feature-subtitle">멀고 불편한 F5~F12를 손에 가까운 QWER, ASDF로 재배치하세요!</p>
+
+    <div class="keyboard-visual">
+        <p class="keyboard-title">
+            <strong>기존:</strong> 거리가 멀어서 효율적으로 사용하기 어려운 단축키 배치
+        </p>
+
+        <div class="keyboard-layout">
+            <div class="key-row">
+                <div class="key key-group-1">F1</div>
+                <div class="key key-group-1 highlight">F2</div>
+                <div class="key key-group-1">F3</div>
+                <div class="key-spacer"></div>
+                <div class="key key-group-2 highlight">F5</div>
+                <div class="key key-group-2">F6</div>
+                <div class="key key-group-2">F7</div>
+                <div class="key key-group-2">F8</div>
+                <div class="key-spacer"></div>
+                <div class="key key-group-3">F9</div>
+                <div class="key key-group-3">F10</div>
+                <div class="key key-group-3">F11</div>
+                <div class="key key-group-3 highlight">F12</div>
+            </div>
+        </div>
+
+        <div style="text-align: center;">
+            <div class="arrow-down">↓</div>
+        </div>
+
+        <p class="keyboard-title" style="margin-top: 20px;">
+            <strong>변경 후:</strong> 한 곳에 모아서 편하게 사용
+        </p>
+
+        <div class="mapped-keys">
+            <div class="key-row" style="margin-left: 0px;">
+                <div class="key key-group-1">1</div>
+                <div class="key key-group-1 highlight">2</div>
+                <div class="key key-group-1">3</div>
+            </div>
+            <div class="key-row" style="margin-left: 30px;">
+                <div class="key key-group-2 highlight">Q</div>
+                <div class="key key-group-2">W</div>
+                <div class="key key-group-2">E</div>
+                <div class="key key-group-2">R</div>
+            </div>
+            <div class="key-row" style="margin-left: 60px;">
+                <div class="key key-group-3">A</div>
+                <div class="key key-group-3">S</div>
+                <div class="key key-group-3">D</div>
+                <div class="key key-group-3 highlight">F</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hotkey-features">
+        <ul>
+            <li><strong>QWER 스킬 난사:</strong> 핫키 한 번으로 바로 대상에게 스킬 시전, 클릭 한 번을 줄여주는 편리함</li>
+            <li><strong>무빙 콤보:</strong> 단축창 F5~F12 스킬을 휠클릭처럼 사용, 무빙트리플·무빙선버 간편하게</li>
+            <li><strong>핫키 커스텀:</strong> 휠클릭 방식 적용/미적용 선택 가능, 클래스/상황별 프리셋 3개 전환</li>
+        </ul>
+    </div>
+</div>
+
+                        <!-- Feature 2: Button UI -->
+            <div class="button-ui-section">
+                <h3 style="color: #c4b5fd; font-size: 1.6em; text-align: center; margin: 50px 0 15px 0;">
+                    2️⃣ 버튼 UI (애드온) 기능
+                </h3>
+                <p class="feature-subtitle">게임 화면에 직접 표시되는 커스텀 버튼 오버레이</p>
+
+                <div class="game-screen-wrapper">
+                    <img src="애드온캡처/게임화면합성.png" style="border: 2px solid rgba(139, 92, 246, 0.3); border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);" alt="게임 화면 + 버튼 UI + 배너">
+                </div>
+
+                <div class="ui-features">
+                    <ul>
+                        <li><strong>최대 20개 버튼:</strong> 원하는 만큼 커스텀 가능</li>
+                        <li><strong>드래그 이동:</strong> 게임 화면 원하는 곳에 자유 배치</li>
+                        <li><strong>투명도 조절:</strong> 0~255단계 (시야 방해 없음)</li>
+                        <li><strong>가로/세로 전환:</strong> 레이아웃 자유롭게 변경</li>
+                        <li><strong>1~3행 배치:</strong> 공간 효율적으로 활용</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Feature 3: Sequence -->
+            <div class="sequence-features">
+                <h3 style="color: #c4b5fd; font-size: 1.6em; text-align: center; margin: 50px 0 15px 0;">
+                    3️⃣ 시퀀스 시스템
+                </h3>
+                <p class="feature-subtitle">복잡한 작업을 자동화하여 편리하게</p>
+
+                <div class="feature-box">
+                    <h4>🔁 스킬 자동 반복</h4>
+                    <ul>
+                        <li>20개 버튼에 자유롭게 지정</li>
+                        <li>버튼만 딸깍하면 자동 유지</li>
+                        <li>잠수 중 군버프, 쿨타임 버프</li>
+                        <li>반복 간격 자유 설정</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h4>⚡ 쉽고 빠른 타이핑</h4>
+                    <ul>
+                        <li><strong>서버 명령어:</strong> .빨 .주 .말 .칼렉풀기 .자동칼질 자주 쓰는 명령어를 빠르게</li>
+                        <li>귀찮은 타이핑 간편하게</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h4>✨ 버프 한방에</h4>
+                    <ul>
+                        <li>요정버프, 다엘버프, 기타 버프 등</li>
+                        <li>버튼 클릭 한 번으로 해결</li>
+                        <li>복잡한 버프 시퀀스를 클릭 한 번에</li>
+                    </ul>
+                </div>
+
+                <div class="feature-box">
+                    <h4>🏥 자힐/자뮨</h4>
+                    <ul>
+                        <li>셀프 힐, 셀프 이뮨</li>
+                        <li>단축키/버튼 한 번으로 내 캐릭터에 시전</li>
+                        <li>클릭 두 번이 한 번으로</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conclusion -->
+            <div class="conclusion-box">
+                <h3>👴 50대도 신컨!</h3>
+                <p>손 많이 탄다는 법사, 요정도 신컨 가능 • 귀찮은 반복도 편하게 • 누구나 쉽게 사용</p>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Safety Section -->
+        <div class="safety-section">
+            <h2>✅ 안전한 편의성 도구</h2>
+            <ul class="safety-list">
+                <li>게임 메모리 조작 없음</li>
+                <li>패킷 조작 없음</li>
+                <li>단순 키보드/마우스 입력 자동화</li>
+                <li><strong>본 프로그램은 편의성 보조 도구입니다</strong></li>
+            </ul>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Video Section -->
+        <div class="video-section">
+            <h2>🎬 소개 영상</h2>
+            <p class="section-subtitle">실제 사용 영상을 통해 기능을 확인해보세요</p>
+
+            <div class="video-wrapper">
+                <video controls>
+                    <source src="녹음 2025-10-25 133908.mp4" type="video/mp4">
+                    브라우저가 비디오를 지원하지 않습니다.
+                </video>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Pricing Section -->
+        <div class="pricing-section">
+            <h2>💬 후원 안내</h2>
+            <p class="section-subtitle">자발적 후원으로 프로그램 개발을 지원해주세요</p>
+
+            <div class="pricing-box">
+                <h3>📋 이용 안내</h3>
+                <ul>
+                    <li><strong>후원 리워드:</strong> 1만원 후원 시 30일 사용 리워드</li>
+                    <li><strong>최초 등록요청 시:</strong> 무료이용 라이선스 발급 - 3일</li>
+                    <li><strong>라이선스:</strong> 하드웨어 ID 기반 (PC 1대 전용)</li>
+                    <li><strong>호환성:</strong> 리니지 프리섭 모든 버전 사용 가능</li>
+                    <li><strong>후원 문의:</strong> 텔레그램 @smart_addon</li>
+                </ul>
+            </div>
+
+            <p class="notice-text">
+                본 프로그램은 자발적 후원으로 사용하실 수 있으며,<br>
+                이유 없는 후원금 반환은 불가합니다.<br>
+                후원금은 프로그램 개발 및 개선에 사용됩니다.
+            </p>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Contact Section -->
+        <div class="contact-section">
+            <div class="contact-icon">💬</div>
+            <h2>텔레그램 문의</h2>
+            <p>파일 다운로드, 라이선스 발급, 기술 지원</p>
+
+            <a href="https://t.me/smart_addon" class="telegram-link" target="_blank">
+                @smart_addon
+            </a>
+
+            <p style="margin-top: 25px; font-size: 0.9em;">
+                📌 3일 체험 라이선스 요청<br>
+                📌 정식 후원 및 리워드 안내
+            </p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p class="brand" style="margin-bottom: 12px;">
+                IreCan Smart Addon - 이레캔 스마트 애드온
+            </p>
+            <p>
+                본 프로그램 사용에 대한 책임은 사용자에게 있습니다.
+            </p>
+            <p style="margin-top: 18px; opacity: 0.7;">
+                &copy; 2025 IreCan Smart Addon. All rights reserved.
+            </p>
+        </footer>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">
+        ↑
+    </button>
+
+    <script>
+    // 스크롤 위치에 따라 버튼 표시/숨김
+    window.addEventListener('scroll', function() {
+        const scrollToTopBtn = document.getElementById('scrollToTop');
+        if (window.pageYOffset > 300) {
+            scrollToTopBtn.classList.add('show');
+        } else {
+            scrollToTopBtn.classList.remove('show');
+        }
+    });
+
+    // 맨 위로 스크롤
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+    </script>
+</body>
+</html>
