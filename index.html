@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="origin">
     <title>IreCan Smart Addon - 세계최초 리니지 클래식 애드온</title>
 
     <!-- Google tag (gtag.js) -->
@@ -992,22 +993,49 @@
     </div>
 
     <script>
-    // notice.txt 파일에서 공지사항 내용 읽기
-    fetch('notice.txt')
-        .then(response => {
-            if (!response.ok) throw new Error('No notice');
-            return response.text();
-        })
-        .then(text => {
-            const trimmedText = text.trim();
-            if (trimmedText) {
-                document.getElementById('noticeText').textContent = trimmedText;
+    // Apps Script URL (후기 시스템과 동일)
+    const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbwktFRF7KvHLCFT1T9Ru3bGuc8dzMPV0FG9ZgAbDBQg4D_KWapa7QpVBfRg-GGW30nb6g/exec?type=settings';
+
+    // Google Sheets에서 설정값 읽기 (공지사항, 유튜브URL)
+    fetch(SETTINGS_URL)
+        .then(response => response.json())
+        .then(data => {
+            // 공지사항 설정
+            if (data.notice && data.notice.trim()) {
+                document.getElementById('noticeText').textContent = data.notice;
                 document.getElementById('noticeBanner').classList.add('show');
+            }
+
+            // 유튜브 URL 설정
+            if (data.youtubeUrl && data.youtubeUrl.trim()) {
+                const videoFrame = document.getElementById('videoFrame');
+                if (videoFrame) {
+                    // YouTube URL을 임베드 형식으로 변환
+                    let embedUrl = data.youtubeUrl;
+
+                    // watch?v= 형식을 embed/ 형식으로 변환
+                    if (embedUrl.includes('watch?v=')) {
+                        const videoId = embedUrl.split('watch?v=')[1].split('&')[0];
+                        embedUrl = 'https://www.youtube-nocookie.com/embed/' + videoId;
+                    }
+                    // youtu.be 형식도 처리
+                    else if (embedUrl.includes('youtu.be/')) {
+                        const videoId = embedUrl.split('youtu.be/')[1].split('?')[0];
+                        embedUrl = 'https://www.youtube-nocookie.com/embed/' + videoId;
+                    }
+                    // 이미 embed 형식이면 youtube-nocookie로 변경
+                    else if (embedUrl.includes('youtube.com/embed/')) {
+                        embedUrl = embedUrl.replace('youtube.com', 'youtube-nocookie.com');
+                    }
+
+                    videoFrame.src = embedUrl;
+                }
             }
         })
         .catch(error => {
-            // 로컬 환경이거나 notice.txt 없으면 기본 공지 표시
-            const defaultNotice = '🎉 신규 사용자 3일 무료 체험 이벤트 진행중! 새벽에는 승인이 늦어질 수 있습니다. 카톡 오픈채팅 "이레캔 스마트 애드온" 에서 사용자 경험과 사용노하우를 공유해 보세요!';
+            console.error('설정 로딩 실패:', error);
+            // 기본 공지 표시
+            const defaultNotice = '🎉 신규 사용자 3일 무료 체험!';
             document.getElementById('noticeText').textContent = defaultNotice;
             document.getElementById('noticeBanner').classList.add('show');
         });
@@ -1247,13 +1275,484 @@
             <h2>🎬 소개 영상</h2>
             <p class="section-subtitle">실제 사용 영상을 통해 기능을 확인해보세요</p>
 
-            <div style="text-align: center; padding: 40px 20px;">
-                <a href="https://www.youtube.com/watch?v=yYpx4C06IdY" class="telegram-link" target="_blank" style="background: linear-gradient(135deg, #ff0000, #cc0000); box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3); display: inline-block; font-size: 1.2em;">
-                    ▶️ YouTube에서 소개 영상 보기
-                </a>
-                <p style="margin-top: 15px; color: #a1a1aa; font-size: 0.9em;">클릭하시면 YouTube 새 창에서 영상이 재생됩니다</p>
+            <div class="video-wrapper">
+                <iframe id="videoFrame" src="https://www.youtube-nocookie.com/embed/yYpx4C06IdY" frameborder="0" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen referrerpolicy="origin"></iframe>
             </div>
         </div>
+
+        <div class="divider"></div>
+
+        <!-- Reviews Section -->
+        <div class="reviews-section">
+            <h2 style="text-align: center;">💬 사용자 후기</h2>
+            <p class="section-subtitle" style="text-align: center;">이레캔 애드온을 사용해보신 분들의 생생한 후기</p>
+
+            <!-- 후기 작성 폼 -->
+            <div class="review-form-box">
+                <h3 style="color: #c4b5fd; font-size: 1.2em; margin-bottom: 20px; text-align: center;">✍️ 후기 남기기</h3>
+
+                <form id="reviewForm" onsubmit="submitReview(event)">
+                    <div class="form-group">
+                        <label for="reviewName">이름</label>
+                        <input type="text" id="reviewName" name="name" required placeholder="홍길동">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reviewContent">후기</label>
+                        <textarea id="reviewContent" name="content" required placeholder="이레캔 애드온을 사용해보신 경험을 공유해주세요" rows="4"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-review-btn">후기 남기기</button>
+
+                    <p style="text-align: center; color: #a1a1aa; font-size: 0.85em; margin-top: 15px;">
+                        ⚠️ 작성 후 수정이 불가하니 신중히 작성해주세요<br>
+                        수정이 필요하시면 텔레그램으로 문의해주세요
+                    </p>
+                </form>
+            </div>
+
+            <!-- 후기 목록 -->
+            <div class="reviews-list-box">
+                <h3 style="color: #c4b5fd; font-size: 1.2em; margin-bottom: 25px; text-align: center;">
+                    📝 후기 <span id="reviewCount">(0)</span>
+                </h3>
+
+                <div id="reviewsList">
+                    <div style="text-align: center; color: #a1a1aa; padding: 40px 20px;">
+                        <p style="font-size: 1.1em;">⏳ 후기를 불러오는 중...</p>
+                    </div>
+                </div>
+
+                <!-- 페이지네이션 -->
+                <div id="pagination" style="display: none;">
+                    <div class="pagination-container">
+                        <button class="pagination-btn" id="prevBtn" onclick="changePage(-1)">
+                            ← 이전
+                        </button>
+                        <div class="pagination-numbers" id="pageNumbers"></div>
+                        <button class="pagination-btn" id="nextBtn" onclick="changePage(1)">
+                            다음 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        // Apps Script 웹 앱 URL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwktFRF7KvHLCFT1T9Ru3bGuc8dzMPV0FG9ZgAbDBQg4D_KWapa7QpVBfRg-GGW30nb6g/exec';
+
+        // 페이지네이션 변수
+        let allReviews = [];
+        let currentPage = 1;
+        const reviewsPerPage = 5;
+
+        // 후기 제출
+        async function submitReview(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('reviewName').value.trim();
+            const content = document.getElementById('reviewContent').value.trim();
+
+            if (!name || !content) {
+                alert('이름과 후기 내용을 모두 입력해주세요.');
+                return;
+            }
+
+            // 버튼 비활성화
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = '등록 중...';
+
+            try {
+                // 후기 제출
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        content: content
+                    })
+                });
+
+                // no-cors 모드에서는 응답을 읽을 수 없으므로 성공으로 간주
+                alert('✅ 후기가 등록되었습니다!\n\n게시판에 바로 표시됩니다.\n감사합니다!');
+
+                // 폼 초기화
+                document.getElementById('reviewForm').reset();
+
+                // 후기 목록 새로고침
+                setTimeout(loadReviews, 1000);
+
+            } catch (error) {
+                console.error('후기 제출 실패:', error);
+                alert('❌ 후기 등록에 실패했습니다.\n잠시 후 다시 시도해주세요.');
+            } finally {
+                // 버튼 활성화
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
+            }
+        }
+
+        // 후기 목록 불러오기
+        async function loadReviews() {
+            try {
+                const response = await fetch(SCRIPT_URL);
+                const reviews = await response.json();
+
+                allReviews = reviews;
+                currentPage = 1;
+
+                displayReviews();
+
+            } catch (error) {
+                console.error('후기 로딩 실패:', error);
+                document.getElementById('reviewsList').innerHTML = `
+                    <div style="text-align: center; color: #ef4444; padding: 40px 20px;">
+                        <p>❌ 후기를 불러오는데 실패했습니다.</p>
+                        <p style="font-size: 0.9em; margin-top: 10px;">잠시 후 다시 시도해주세요.</p>
+                    </div>
+                `;
+                document.getElementById('pagination').style.display = 'none';
+            }
+        }
+
+        // 현재 페이지 후기 표시
+        function displayReviews() {
+            const reviewsList = document.getElementById('reviewsList');
+            const reviewCount = document.getElementById('reviewCount');
+            const pagination = document.getElementById('pagination');
+
+            reviewCount.textContent = '(' + allReviews.length + ')';
+
+            if (allReviews.length === 0) {
+                reviewsList.innerHTML = `
+                    <div style="text-align: center; color: #a1a1aa; padding: 40px 20px;">
+                        <p style="font-size: 1.1em;">💬 첫 후기를 남겨주세요!</p>
+                    </div>
+                `;
+                pagination.style.display = 'none';
+                return;
+            }
+
+            // 페이지네이션 계산
+            const totalPages = Math.ceil(allReviews.length / reviewsPerPage);
+            const startIndex = (currentPage - 1) * reviewsPerPage;
+            const endIndex = startIndex + reviewsPerPage;
+            const currentReviews = allReviews.slice(startIndex, endIndex);
+
+            // 후기 표시
+            reviewsList.innerHTML = currentReviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <span class="review-author">👤 ${escapeHtml(review.name)}</span>
+                        <span class="review-date">📅 ${review.date}</span>
+                    </div>
+                    <div class="review-content">
+                        ${escapeHtml(review.content).replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            `).join('');
+
+            // 페이지네이션 표시
+            if (totalPages > 1) {
+                pagination.style.display = 'block';
+                renderPagination(totalPages);
+            } else {
+                pagination.style.display = 'none';
+            }
+        }
+
+        // 페이지네이션 버튼 렌더링
+        function renderPagination(totalPages) {
+            const pageNumbers = document.getElementById('pageNumbers');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            // 이전/다음 버튼 활성화 제어
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // 페이지 번호 생성
+            let pagesHtml = '';
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === currentPage) {
+                    pagesHtml += `<button class="page-number active" onclick="goToPage(${i})">${i}</button>`;
+                } else {
+                    pagesHtml += `<button class="page-number" onclick="goToPage(${i})">${i}</button>`;
+                }
+            }
+            pageNumbers.innerHTML = pagesHtml;
+        }
+
+        // 페이지 변경
+        function changePage(direction) {
+            const totalPages = Math.ceil(allReviews.length / reviewsPerPage);
+            const newPage = currentPage + direction;
+
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                displayReviews();
+                scrollToReviews();
+            }
+        }
+
+        // 특정 페이지로 이동
+        function goToPage(page) {
+            currentPage = page;
+            displayReviews();
+            scrollToReviews();
+        }
+
+        // 후기 섹션으로 스크롤
+        function scrollToReviews() {
+            document.getElementById('reviewsList').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // XSS 방지
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 페이지 로드 시 후기 불러오기
+        loadReviews();
+
+        // 1분마다 자동 새로고침
+        setInterval(loadReviews, 60000);
+        </script>
+
+        <style>
+        /* Reviews Section */
+        .reviews-section {
+            margin: 40px 0;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px solid rgba(139, 92, 246, 0.15);
+        }
+
+        /* 후기 작성 폼 */
+        .review-form-box {
+            background: rgba(139, 92, 246, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #c4b5fd;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            color: #e4e4e7;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-review-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .submit-review-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        /* 후기 목록 */
+        .reviews-list-box {
+            margin-top: 40px;
+        }
+
+        .review-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid #8b5cf6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .review-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(5px);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .review-author {
+            color: #c4b5fd;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .review-date {
+            color: #a1a1aa;
+            font-size: 0.85em;
+        }
+
+        .review-content {
+            color: #e4e4e7;
+            line-height: 1.6;
+            font-size: 0.95em;
+        }
+
+        /* 페이지네이션 */
+        #pagination {
+            margin-top: 30px;
+        }
+
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-btn {
+            padding: 10px 20px;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+            transform: translateY(-2px);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination-numbers {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-number {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            color: #e4e4e7;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .page-number:hover {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+            transform: scale(1.05);
+        }
+
+        .page-number.active {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-color: #8b5cf6;
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            .reviews-section {
+                padding: 25px 15px;
+            }
+
+            .review-form-box {
+                padding: 20px 15px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                font-size: 0.9em;
+            }
+
+            .review-card {
+                padding: 15px;
+            }
+
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .pagination-btn {
+                padding: 8px 16px;
+                font-size: 0.85em;
+            }
+
+            .page-number {
+                width: 36px;
+                height: 36px;
+                font-size: 0.85em;
+            }
+        }
+        </style>
 
         <div class="divider"></div>
 
