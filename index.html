@@ -1580,6 +1580,13 @@
                     💡 총 <span id="totalReactions" style="color: #8b5cf6; font-weight: 700;">0</span>명이 반응했습니다
                 </p>
             </div>
+
+            <!-- 디버그용 초기화 버튼 (개발 중에만 표시) -->
+            <div style="text-align: center; margin-top: 15px;">
+                <button onclick="resetReactionCache()" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 0.85em; transition: all 0.3s;">
+                    🔄 클릭 기록 초기화 (테스트용)
+                </button>
+            </div>
         </div>
 
         <script>
@@ -1741,6 +1748,17 @@
 
         // 페이지 로드 시 리액션 카운트 불러오기
         loadReactions();
+
+        // 🔄 리액션 캐시 초기화 함수 (테스트용)
+        function resetReactionCache() {
+            if (confirm('클릭 기록을 초기화하시겠습니까?\n\n모든 리액션 버튼을 다시 클릭할 수 있게 됩니다.\n(Google Sheets 데이터는 변경되지 않습니다)')) {
+                localStorage.removeItem('irecan_clicked_buttons');
+                localStorage.removeItem('irecan_reactions');
+                localStorage.removeItem('irecan_reactions_time');
+                alert('✅ 초기화 완료!\n페이지를 새로고침합니다.');
+                location.reload();
+            }
+        }
         </script>
 
         <style>
